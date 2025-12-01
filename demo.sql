@@ -4,6 +4,15 @@ select search_text,count(1)cnt from cj_search_text group by search_text  order b
 select * from cj_url where url='https://t.me/smnvwangtj/1733'
 select * from cj_url order by msg_time
 
+insert into cj_url(id, url, is_msg, status, source, msg_time, create_time, update_time)
+select distinct SUBSTRING_INDEX(url, '/', 4)
+from cj_url where is_msg=1 and not
+
+
+
+
+
+
 select * from tmp_category_kw
 
 中文包 最多  汉化 9
