@@ -7,3 +7,4 @@ select url,2,1,10 from(
 )t where url not in(select url from cj_url where is_msg=2)
 
 
+select * from cms_content

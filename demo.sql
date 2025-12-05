@@ -2,7 +2,7 @@
 
 select search_text,count(1)cnt from cj_search_text group by search_text  order by cnt desc
 select * from cj_url where url='https://t.me/smnvwangtj/1733'
-select * from cj_url where is_msg=2 order by msg_time
+select * from cj_url where is_msg=2 and status=2 order by msg_time
 
 insert into cj_url(url, is_msg, status, source)
 select url,2,1,10 from(
@@ -14,6 +14,7 @@ select * from cj_url where msg_time is not null order by msg_time limit 10
 
 alter table cj_url add column remark  varchar(500)    comment '备注'
 
+select * from cms_chat
 
 
 select * from tmp_category_kw
