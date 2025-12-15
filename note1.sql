@@ -1,10 +1,13 @@
-
--- 插入消息所属群 url
-insert into cj_url(url, is_msg, status, source)
-select url,2,1,10 from(
-    select distinct SUBSTRING_INDEX(url, '/', 4)url
-    from cj_url where is_msg=1
-)t where url not in(select url from cj_url where is_msg=2)
+select * from cj_url order by create_time desc;
+select * from cj_search_url order by create_time desc;
+select * from cj_search_text order by create_time desc;
 
 
-select * from cms_content
+select * from cj_url where status=3 order by update_time desc;
+
+select * from cms_chat where uname='ghk56f'
+select * from cms_message where status=2 order by update_time desc
+
+update cms_message set status=2 where id in(1,2,3,4,5)
+
+SELECT * FROM `cms_content_view` WHERE status = 2 AND is_pushed_es != 1 ORDER BY update_time LIMIT 100
