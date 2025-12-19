@@ -102,22 +102,55 @@ A片
 捆绑调教
 
 
-select count(1) from  cms_content_view where id IS  NULL
-drop view if exists cms_content_view;
-create view cms_content_view as
-select es_id as id, id as tbid, uname,tgid
-     ,title, description, link_type, status, is_pushed_es, source, create_time, update_time
-     ,concat('https://t.me/',uname) as url
-     ,user_num, is_ios
-     ,1 as content_type
-     ,null as duration,null as file_size,null as file_name,null as publish_time,null as read_num
-from cms_chat
-union all
+select count(1) from  cms_content_view where status=2 and is_pushed_es=0
+update cms_message set is_pushed_es=0 where status=2
+update cms_chat set is_pushed_es=0 where status=2
+
+select count(1) from cj_url where status=1
+
+CREATE INDEX idx_status_pushed_update ON cms_chat (status,is_pushed_es,update_time);
+CREATE INDEX idx_status_pushed_update ON cms_message (status,is_pushed_es,update_time);
+
+SELECT count(*) FROM `cms_content_view` WHERE status = 1 AND is_pushed_es != 1
+SELECT * FROM `cms_message` WHERE status = 1 AND is_pushed_es != 1 ORDER BY update_time LIMIT 20
+
 select a.es_id as id, a.id as tbid, a.uname,a.tgid
      ,a.title, a.description,a.link_type,a.status,a.is_pushed_es, a.source, a.create_time, a.update_time
-     ,concat('https://t.me/',b.uname,'/',a.tgid) as url
+     ,concat('https://t.me/',a.uname,'/',a.tgid) as url
      ,b.user_num, b.is_ios
      ,2 as content_type
      ,a.duration, a.file_size, a.file_name,a.publish_time,a.read_num
 from cms_message a
-         left join cms_chat b on a.uname=b.uname;
+         left join cms_chat b on a.uname=b.uname
+
+WHERE a.status = 1 AND a.is_pushed_es != 1 ORDER BY a.update_time LIMIT 20
+
+drop view if exists cms_chat_view;
+create view cms_chat_view as
+select es_id as id, id as tbid, uname
+     ,title, description, link_type, status, is_pushed_es, source
+     ,concat('https://t.me/',uname) as url
+     ,user_num, is_ios,1 as content_type
+     ,tgid, create_time, update_time
+from cms_chat;
+
+drop view if exists cms_message_view;
+create view cms_message_view as
+select a.es_id as id, a.id as tbid, a.uname,a.tgid
+     ,a.title, a.description,a.link_type,a.status,a.is_pushed_es, a.source
+     ,concat('https://t.me/',a.uname,'/',a.tgid) as url
+     ,b.user_num, b.is_ios,2 as content_type
+     ,a.publish_time,a.read_num,a.duration, a.file_size, a.file_name
+     ,a.create_time, a.update_time
+from cms_message a
+left join cms_chat b on a.uname=b.uname;
+
+select count(1) from cms_content_view where status=1 and is_pushed_es=2
+select * from cms_message where link_type=3
+select count(1)  from cj_url where status=1 and is_msg=2 order by update_time
+
+select * from cj_url where status=1 and is_msg=2 order by update_time
+
+update cms_message set is_pushed_es=2 where is_pushed_es=0
+
+CREATE INDEX idx_status_ismsg_update ON cj_url (status,is_msg,update_time);
